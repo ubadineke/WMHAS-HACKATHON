@@ -30,11 +30,13 @@ export default class Ad {
 
     // public static async delete() {}
 
+    @Controller()
     public static async viewAll(req: Request, res: Response) {
         const ads = await db.ad.findMany();
         res.status(200).json(ads);
     }
 
+    @Controller()
     public static async myAds(req: Request, res: Response) {
         const ads = await db.ad.findMany({
             where: {
@@ -46,6 +48,7 @@ export default class Ad {
 
     //public static async search(){}
 
+    @Controller()
     public static async getOne(req: Request, res: Response) {
         const { id } = req.params;
         const ad = await db.ad.findFirst({
