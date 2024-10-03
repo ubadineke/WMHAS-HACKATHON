@@ -21,7 +21,8 @@ export function Controller(customErrorHandler?: any) {
                 if (customErrorHandler) {
                     await customErrorHandler(res);
                 }
-                next(error);
+                console.log(error);
+                res.status(500).json(error.message);
             }
         };
         return descriptor;

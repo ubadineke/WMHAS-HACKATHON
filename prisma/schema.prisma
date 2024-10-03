@@ -14,10 +14,48 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum Status {
+  AVAILABLE
+  UNAVAILABLE
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
 model User {
-  id        String @id @unique @default(cuid())
-  google_id String
-  email     String @unique
-  password  String @default("-")
-  name      String
+  id          String   @id @unique @default(cuid())
+  google_id   String?
+  email       String   @unique
+  password    String   @default("-")
+  name        String
+  phoneNumber String   @default("-")
+  address     String   @default("-")
+  city        String   @default("-")
+  lga         String    @default("-")
+  state       String   @default("-")
+  role        Role     @default(USER)
+  Ad          Ad[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model Ad {
+  id          String   @id @unique @default(cuid())
+  author      User     @relation(fields: [userId], references: [id])
+  title       String
+  description String?
+  type        String
+  price       String
+  quantity    String
+  address     String   @default("-")
+  city        String   @default("-")
+  lga         String    @default("-")
+  state       String   @default("-")
+  status      Status   @default(AVAILABLE)
+  photos      String[]
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 }

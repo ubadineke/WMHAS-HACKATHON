@@ -3,11 +3,48 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { promisify } from 'util';
 import { Controller, Middleware } from '../decorators';
 import db from '../../prisma';
+import bcrypt from 'bcryptjs';
+import { signToken } from '../utils/createJwtToken';
 
 export default class Auth {
     @Controller()
+    public static async signup(req: Request, res: Response) {
+        const { name, email, password } = req.body;
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await db.user.create({
+            data: {
+                name,
+                email,
+                password: hashedPassword,
+            },
+        });
+        const token = signToken(user.id);
+
+        res.status(201).json({ message: 'Signup successful', token });
+    }
+
+    @Controller()
     public static async login(req: Request, res: Response) {
-        res.status(200).json("Let's go");
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Please provide email and password',
+            });
+        }
+        const user = await db.user.findFirst({
+            where: { email },
+        });
+
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            return res.status(401).json({
+                status: 'fail',
+                message: 'Incorrect email or password',
+            });
+        }
+
+        const token = signToken(user.id);
+        res.status(200).json({ message: 'Login successful', token });
     }
 
     @Middleware()
@@ -31,7 +68,7 @@ export default class Auth {
         const decoded: any = await verifyJwt(token, process.env.JWT_SECRET as string).catch((err) => {
             return res.status(401).json('Invalid token, Please log in again!');
         });
-        console.log(decoded);
+        // console.log(decoded);
         // //3) Check if user still exists
         const currentUser = await db.user.findFirst({
             where: { id: decoded.id },

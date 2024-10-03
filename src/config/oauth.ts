@@ -17,6 +17,7 @@ export default function (passport: PassportStatic): void {
                 callbackURL: `${process.env.BASE_URL}/auth/google/callback`,
             } as StrategyOptionsWithRequest,
             async (req: Request, accessToken: string, refreshToken: string, profile: Profile, done: VerifyCallback) => {
+                console.log(123);
                 try {
                     let name = profile.displayName;
                     let google_id = profile.id;
@@ -35,6 +36,7 @@ export default function (passport: PassportStatic): void {
                     console.log({ name, google_id, email });
                     return done(null, profile);
                 } catch (error) {
+                    console.log('So this is the thanks I get?');
                     return done(error);
                 }
             }
