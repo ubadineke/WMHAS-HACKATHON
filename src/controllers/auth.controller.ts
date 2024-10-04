@@ -83,4 +83,38 @@ export default class Auth {
         req.user = currentUser;
         next();
     }
+
+    public static async optionalAuth(req: Request, res: Response, next: NextFunction) {
+        let token;
+        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+            token = req.headers.authorization.split(' ')[1];
+        }
+
+        // If no token, just allow the request to proceed
+        if (!token) {
+            return next();
+        }
+
+        // Verify the token
+        const verifyJwt = promisify(jwt.verify) as (
+            token: string,
+            secretOrPublicKey: jwt.Secret,
+            options?: jwt.VerifyOptions
+        ) => Promise<JwtPayload>;
+
+        const decoded: any = await verifyJwt(token, process.env.JWT_SECRET as string);
+
+        const currentUser = await db.user.findFirst({
+            where: { id: decoded.id },
+        });
+
+        if (!currentUser) {
+            return next(); // Still allow access
+        }
+
+        // Store user details if authenticated
+        req.user = currentUser;
+
+        next();
+    }
 }
