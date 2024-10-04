@@ -7,5 +7,6 @@ const router = Router();
 // router.use(Auth.protect);
 // router.use(Auth.restrictToAdmin);
 router.get('/reported-ads', Admin.getReportedAds);
+router.patch('/ad', Admin.takeDownAd);
 
 export default router;

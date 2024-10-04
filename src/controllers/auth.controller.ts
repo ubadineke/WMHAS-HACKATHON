@@ -13,8 +13,8 @@ export default class Auth {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await db.user.create({
             data: {
-                password: hashedPassword,
                 ...req.body,
+                password: hashedPassword,
             },
         });
         const token = signToken(user.id);
