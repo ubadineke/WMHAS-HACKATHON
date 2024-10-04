@@ -11,4 +11,5 @@ router.use(Auth.protect);
 router.route('/ad').get(Ad.myAds).post(uploadMultiple, Ad.create);
 router.post('/ad/comment', Ad.createComment);
 router.post('/ad/comment/reply', Ad.createReply);
+router.post('/ad/report', Ad.report);
 export default router;

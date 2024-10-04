@@ -117,4 +117,12 @@ export default class Auth {
 
         next();
     }
+
+    @Middleware()
+    public static async restrictToAdmin(req: Request, res: Response, next: NextFunction) {
+        if (req.user.role !== 'ADMIN') {
+            return res.status(403).json('You do not have permission to perform this action');
+        }
+        next();
+    }
 }

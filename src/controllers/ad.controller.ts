@@ -35,6 +35,7 @@ export default class Ad {
     @Controller()
     public static async viewAll(req: Request, res: Response) {
         const ads = await db.ad.findMany();
+        if (!ads) return res.status(404).json('Ads not found');
         res.status(200).json(ads);
     }
 
@@ -159,7 +160,22 @@ export default class Ad {
         res.status(201).json(reply);
     }
 
-    // @Controller()
-    // public static async getCommentsByPost(req: Request, res: Response) {
-    // }
+    @Controller()
+    public static async report(req: Request, res: Response) {
+        const { adId, description } = req.body;
+        console.log(description);
+
+        await db.reportedAd.create({
+            data: {
+                adId,
+                description,
+                userId: req.user.id,
+            },
+        });
+        res.status(200).json({ message: 'Ad reported' });
+    }
+
+    //Get All Reported Ad
+    //Send warning to user
+    //Take down an Ad
 }

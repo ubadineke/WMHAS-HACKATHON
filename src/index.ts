@@ -2,6 +2,7 @@ import express from 'express';
 import { config } from 'dotenv';
 import authRouter from './routes/auth.route';
 import adRouter from './routes/ad.route';
+import adminRouter from './routes/admin.route';
 import passport from 'passport';
 import passportConfig from './config/oauth';
 import { initializeDatabase } from '../prisma';
@@ -18,6 +19,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use('/api/admin', adminRouter);
 app.use('/api', authRouter);
 app.use('/api/', adRouter);
 

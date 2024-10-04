@@ -25,42 +25,48 @@ enum Role {
 }
 
 model User {
-  id          String    @id @unique @default(cuid())
-  google_id   String?
-  email       String    @unique
-  password    String    @default("-")
-  name        String
-  phoneNumber String    @default("-")
-  address     String    @default("-")
-  city        String    @default("-")
-  lga         String    @default("-")
-  state       String    @default("-")
-  role        Role      @default(USER)
-  ads         Ad[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
-  comments    Comment[]
-  replies     Reply[]
+  id               String         @id @unique @default(cuid())
+  google_id        String?
+  email            String         @unique
+  password         String         @default("-")
+  name             String
+  phoneNumber      String         @default("-")
+  address          String         @default("-")
+  city             String         @default("-")
+  lga              String         @default("-")
+  state            String         @default("-")
+  role             Role           @default(USER)
+  ads              Ad[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @default(now()) @updatedAt
+  comments         Comment[]
+  replies          Reply[]
+  reportedUser     ReportedUser[]
+  sentMessages     Message[]      @relation("SentMessages")
+  receivedMessages Message[]      @relation("ReceivedMessages")
+  reportedAd       ReportedAd[]
 }
 
 model Ad {
-  id          String    @id @unique @default(cuid())
-  author      User      @relation(fields: [userId], references: [id])
+  id          String       @id @unique @default(cuid())
+  author      User         @relation(fields: [userId], references: [id])
   title       String
   description String?
   type        String
   price       String
   quantity    String
-  address     String    @default("-")
-  city        String    @default("-")
-  lga         String    @default("-")
-  state       String    @default("-")
-  status      Status    @default(AVAILABLE)
+  address     String       @default("-")
+  city        String       @default("-")
+  lga         String       @default("-")
+  state       String       @default("-")
+  status      Status       @default(AVAILABLE)
+  active      Boolean      @default(true)
   photos      String[]
   userId      String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now()) @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
   comments    Comment[]
+  reportedAds ReportedAd[]
 }
 
 model Comment {
@@ -84,4 +90,35 @@ model Reply {
   updatedAt DateTime @default(now()) @updatedAt
   commentId String
   userId    String
+}
+
+model ReportedAd {
+  id          String   @id @default(cuid())
+  ad          Ad       @relation(fields: [adId], references: [id])
+  description String
+  reportedBy  User     @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  adId        String
+  userId      String   @default("-")
+}
+
+model ReportedUser {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+  userId      String
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id])
+  content    String
+  createdAt  DateTime @default(now())
+  read       Boolean  @default(false)
+  senderId   String
+  receiverId String
 }
