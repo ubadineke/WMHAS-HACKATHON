@@ -43,6 +43,7 @@ export default class Payment {
             data: {
                 amount: ad.price,
                 reference: response.data.data.reference,
+                adId: ad.id,
                 sellerId: ad.author.id,
                 buyerId: req.user.id,
             },
@@ -83,5 +84,22 @@ export default class Payment {
             message: `Transaction ${response.data.data.status}`,
             tx,
         });
+    }
+
+    public static async finishTransaction(req: Request, res: Response) {
+        const { id } = req.query;
+
+        const tx = await db.escrow.update({
+            where: {
+                id,
+                buyerId: req.user.id,
+            },
+            data: {
+                completed: true,
+            },
+        });
+
+        if (!tx) return res.status(400).json('You didnt place an order for this waste');
+        res.status(200).json({ message: 'Buying and selling completed', tx });
     }
 }

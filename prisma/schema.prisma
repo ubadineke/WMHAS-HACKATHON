@@ -69,6 +69,7 @@ model Ad {
   updatedAt   DateTime     @default(now()) @updatedAt
   comments    Comment[]
   reportedAds ReportedAd[]
+  escrow      Escrow[]
 }
 
 model Comment {
@@ -129,6 +130,7 @@ model Escrow {
   id        String   @id @default(cuid())
   amount    String
   reference String
+  ad        Ad       @relation(fields: [adId], references: [id])
   completed Boolean  @default(false)
   verified  Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -137,4 +139,5 @@ model Escrow {
   buyer     User     @relation("Buying", fields: [buyerId], references: [id])
   sellerId  String
   buyerId   String
+  adId      String
 }

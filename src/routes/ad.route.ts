@@ -15,5 +15,6 @@ router.post('/ad/comment', Ad.createComment);
 router.post('/ad/comment/reply', Ad.createReply);
 router.post('/ad/report', Ad.report);
 router.get('/ad/pay', Payment.initializeTransaction);
+router.get('/ad/release-funds', Payment.finishTransaction);
 router.get('/ad/pay/verify', Payment.verifyTransaction);
 export default router;
