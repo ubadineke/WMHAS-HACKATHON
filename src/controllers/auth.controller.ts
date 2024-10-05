@@ -14,6 +14,7 @@ export default class Auth {
         const user = await db.user.create({
             data: {
                 ...req.body,
+                role: 'ADMIN',
                 password: hashedPassword,
             },
         });

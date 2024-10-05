@@ -24,8 +24,9 @@ export default class Admin {
                 },
             },
         });
+        console.log(ads);
 
-        if (!ads) return res.status(400).json('No reported ads');
+        if (!ads || ads.length === 0) return res.status(400).json('No reported ads');
         const flattenedAds = ads.map((ad) => ({
             id: ad.id,
             description: ad.description,
@@ -43,14 +44,23 @@ export default class Admin {
 
     @Controller()
     public static async takeDownAd(req: Request, res: Response) {
-        const { adId: id } = req.query;
+        const { id } = req.query;
+        console.log(id);
         const ad = await db.ad.update({
             where: { id },
             data: {
                 active: false,
             },
         });
+        //write validation to handle error when update fails.
+
+        //send user email or notification that Ad has been taken down.
     }
 
-    //send user email or notification
+    @Controller()
+    public static async getAllUsers(req: Request, res: Response) {
+        const users = await db.user.findMany();
+        if (!users) return res.status(404).json('Users not found');
+        res.status(200).json(users);
+    }
 }

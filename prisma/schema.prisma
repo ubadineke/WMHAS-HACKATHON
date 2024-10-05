@@ -44,6 +44,8 @@ model User {
   reportedUser     ReportedUser[]
   sentMessages     Message[]      @relation("SentMessages")
   receivedMessages Message[]      @relation("ReceivedMessages")
+  selling          Escrow[]       @relation("Selling")
+  buying           Escrow[]       @relation("Buying")
   reportedAd       ReportedAd[]
 }
 
@@ -121,4 +123,18 @@ model Message {
   read       Boolean  @default(false)
   senderId   String
   receiverId String
+}
+
+model Escrow {
+  id        String   @id @default(cuid())
+  amount    String
+  reference String
+  completed Boolean  @default(false)
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+  seller    User     @relation("Selling", fields: [sellerId], references: [id])
+  buyer     User     @relation("Buying", fields: [buyerId], references: [id])
+  sellerId  String
+  buyerId   String
 }
