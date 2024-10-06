@@ -71,9 +71,19 @@ export default class Payment {
                 return res.status(400).json('Transaction not found');
             });
         let tx;
+
+        const escrow = await db.escrow.findFirst({
+            where: { reference },
+        });
+        // console.log(escrow);
+
+        console.log(response.data.data.status);
         if (response.data.data.status === 'success') {
             tx = await db.escrow.update({
-                where: { reference },
+                where: {
+                    id: escrow?.id,
+                    reference,
+                },
                 data: {
                     verified: true,
                 },
