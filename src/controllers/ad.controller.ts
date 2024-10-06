@@ -34,7 +34,11 @@ export default class Ad {
 
     @Controller()
     public static async viewAll(req: Request, res: Response) {
-        const ads = await db.ad.findMany();
+        const ads = await db.ad.findMany({
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
         if (!ads) return res.status(404).json('Ads not found');
         res.status(200).json(ads);
     }
@@ -43,7 +47,7 @@ export default class Ad {
     public static async myAds(req: Request, res: Response) {
         const ads = await db.ad.findMany({
             where: {
-                // userId: req.user.id,
+                userId: req.user.id,
             },
         });
         res.status(200).json(ads);
@@ -53,7 +57,7 @@ export default class Ad {
 
     @Controller()
     public static async getOne(req: Request, res: Response) {
-        const { id } = req.params;
+        const { id } = req.query;
         const isAuthenticated = !!req.user;
         const ad = await db.ad.findFirst({
             where: { id },
@@ -74,7 +78,8 @@ export default class Ad {
                               author: {
                                   // Include the author of the comment
                                   select: {
-                                      name: true, // Fetch only the author's name (or add other fields as needed)
+                                      name: true,
+                                      //   phoneNumber: true, // Fetch only the author's name (or add other fields as needed)
                                   },
                               },
                               replies: {

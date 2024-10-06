@@ -19,9 +19,9 @@ export async function uploadSingleImage(file: any, name: string, path: string) {
 
 export async function uploadMultipleImage(files: any, fileName: string, path: string) {
     const uploads = Array.isArray(files) ? files : [files];
-    if (uploads.length < 2) {
-        throw new Error('Function only works for multiple images');
-    }
+    // if (uploads.length < 2) {
+    //     throw new Error('Function only works for multiple images');
+    // }
 
     const uploadPromises = uploads.map(async (file: any) => {
         return uploadSingleImage(file, fileName, path);

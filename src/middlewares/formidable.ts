@@ -7,6 +7,6 @@ export const uploadSingle = formidable({
 });
 
 export const uploadMultiple = formidable({
-    maxFileSize: 1 * 1024 * 1024,
+    // maxFileSize: 1 * 1024 * 1024,
     multiples: true,
 });
