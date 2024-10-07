@@ -10,8 +10,10 @@ export default class Admin {
                 ad: {
                     select: {
                         title: true,
+                        photos: true,
                         author: {
                             select: {
+                                id: true,
                                 name: true,
                             },
                         },
@@ -19,6 +21,7 @@ export default class Admin {
                 },
                 reportedBy: {
                     select: {
+                        id: true,
                         name: true,
                     },
                 },
@@ -27,19 +30,20 @@ export default class Admin {
         console.log(ads);
 
         if (!ads || ads.length === 0) return res.status(400).json('No reported ads');
-        const flattenedAds = ads.map((ad) => ({
-            id: ad.id,
-            description: ad.description,
-            createdAt: ad.createdAt,
-            updatedAt: ad.updatedAt,
-            adId: ad.adId,
-            userId: ad.userId,
-            title: ad.ad.title || '', // Flattened title from ad
-            author: ad.ad.author?.name || '', // Flattened author name
-            reportedBy: ad.reportedBy?.name || '', // Flattened reportedBy name
-        }));
+        // const flattenedAds = ads.map((ad) => ({
+        //     id: ad.id,
+        //     description: ad.description,
+        //     createdAt: ad.createdAt,
+        //     updatedAt: ad.updatedAt,
+        //     adId: ad.adId,
+        //     userId: ad.userId,
+        //     title: ad.ad.title || '', // Flattened title from ad
+        //     photos:
+        //     author: ad.ad.author?.name || '', // Flattened author name
+        //     reportedBy: ad.reportedBy?.name || '', // Flattened reportedBy name
+        // }));
 
-        res.status(200).json(flattenedAds);
+        res.status(200).json(ads);
     }
 
     @Controller()
